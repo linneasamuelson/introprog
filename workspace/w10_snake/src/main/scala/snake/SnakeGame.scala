@@ -25,11 +25,21 @@ abstract class SnakeGame(settings: Settings) extends introprog.BlockGame(
   private var _iterationsSinceStart = 0
   def iterationsSinceStart = _iterationsSinceStart
 
-  def enterStartingState(): Unit = ??? //sudda, meddela "tryck space för start"
+  def enterStartingState(): Unit =
+    pixelWindow.clear()
+    pixelWindow.drawText("tryck space för start", 20, 30, Colors.Pink, 13)
+  //sudda, meddela "tryck space för start"
 
-  def enterPlayingState(): Unit = ??? //sudda, för varje entitet: nollställ & rita
+  def enterPlayingState(): Unit =
+    pixelWindow.clear()
+    entities.foreach(_.reset())
+    entities.foreach(_.draw())
+    state = Playing
+  //sudda, för varje entitet: nollställ & rita
 
-  def enterGameOverState(): Unit = ??? // meddela "game over"
+  def enterGameOverState(): Unit =
+    pixelWindow.drawText("game over", 20, 30, Colors.Pink, 13)
+    state = GameOver
 
   def enterQuittingState(): Unit = 
     println("Goodbye!")
@@ -37,7 +47,12 @@ abstract class SnakeGame(settings: Settings) extends introprog.BlockGame(
     state = Quitting
 
   def randomFreePos(): Pos = 
-    ??? // dra slump-pos tills ledig plats, används av frukt, monster
+    var pos = Pos.random(Dim(dim))
+    while entities.exists(_.isOccupyingBlockAt(pos)) do
+      pos =  Pos.random(Dim(dim))
+
+    pos
+ // dra slump-pos tills ledig plats, används av frukt, monster
 
   override def onKeyDown(key: String): Unit = 
     println(s"""key "$key" pressed""")
